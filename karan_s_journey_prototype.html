@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Karan’s Journey</title>
+<style>
+  :root {
+    --day: #7c4dff;
+    --bg: #fdf6ee;
+    --card: #ffffff;
+    --ink: #1f2328;
+    --mute: #6b7280;
+    --line: #eadff5;
+    --acc: #7c4dff;
+    --accs: #efe9ff;
+    --user: #7c4dff;
+    --userink: #ffffff;
+    --ok: #1f9d6a;
+    --bad: #d6453d;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1a1626;
+      --card: #262037;
+      --ink: #f1edf8;
+      --mute: #a79fba;
+      --line: #3d3556;
+      --acc: #b69cff;
+      --accs: #32274f;
+      --user: #8a63f0;
+      --userink: #ffffff;
+      --ok: #6fe0b0;
+      --bad: #ff8f85;
+      color-scheme: dark;
+    }
+  }
+
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 18px 16px 48px;
+  }
+
+  h1 {
+    font-size: 24px;
+    margin: 4px 0 2px;
+    background: linear-gradient(90deg, #7c4dff, #ff6b6b, #ff9f1c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .sub {
+    color: var(--mute);
+    font-size: 13px;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .bar {
+    height: 6px;
+    background: var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 18px;
+  }
+
+  .bar i {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #7c4dff, #ff6b6b, #ff9f1c);
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Chat Layout with Pip Character */
+  .msg-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin: 12px 24px 12px 0;
+    animation: in 0.28s ease;
+  }
+
+  .msg-row.u {
+    justify-content: flex-end;
+    margin: 12px 0 12px 44px;
+  }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accs);
+    border: 1.5px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(124, 77, 255, 0.14);
+  }
+
+  .avatar svg {
+    width: 34px;
+    height: 34px;
+    overflow: visible;
+  }
+
+  .pip-bob {
+    animation: pipBob 2.6s ease-in-out infinite;
+    transform-origin: center bottom;
+  }
+
+  @keyframes pipBob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2.5px); }
+  }
+
+  .b {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px 16px 16px 4px;
+    padding: 13px 15px;
+    flex: 1;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+  }
+
+  .b.u {
+    background: var(--user);
+    color: var(--userink);
+    border-color: var(--user);
+    border-radius: 16px 16px 4px 16px;
+    text-align: right;
+    flex: 0 1 auto;
+    padding: 11px 16px;
+  }
+
+  .bot-name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--acc);
+    margin-bottom: 4px;
+  }
+
+  .lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--mute);
+  }
+
+  .sc {
+    margin: 8px 0;
+  }
+
+  .sc.w {
+    background: color-mix(in srgb, var(--day) 14%, transparent);
+    border-left: 4px solid var(--day);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-style: italic;
+  }
+
+  .fb {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .opts {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 14px;
+  }
+
+  .opts.row {
+    flex-direction: row;
+  }
+
+  .opts.row button {
+    flex: 1;
+    text-align: center;
+  }
+
+  button {
+    font: inherit;
+    text-align: left;
+    background: var(--card);
+    color: var(--ink);
+    border: 1.5px solid var(--day);
+    border-radius: 12px;
+    padding: 12px 15px;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+  }
+
+  button:hover:not(:disabled),
+  button:focus-visible:not(:disabled) {
+    background: color-mix(in srgb, var(--day) 14%, transparent);
+    transform: translateY(-1px);
+  }
+
+  button.p {
+    background: var(--day);
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--day) 32%, transparent);
+  }
+
+  button.p:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--day) 88%, #000);
+  }
+
+  button.ghost {
+    border-color: var(--line);
+    color: var(--mute);
+    text-align: center;
+  }
+
+  button:disabled {
+    opacity: 0.48;
+    cursor: not-allowed;
+  }
+
+  input {
+    font: inherit;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    background: var(--card);
+    color: var(--ink);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--acc);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc) 20%, transparent);
+  }
+
+  .err {
+    color: var(--bad);
+    font-size: 13px;
+    margin-top: -2px;
+    min-height: 18px;
+  }
+
+  /* Cartoon Setting Illustration Frame */
+  .ill {
+    margin: 10px 0 12px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2.5px solid #2b2238;
+    box-shadow: 0 6px 18px rgba(43, 34, 56, 0.14);
+    background: #f5efe6;
+  }
+
+  .ill svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Minimalist Semi-Circular 7-Dot Path */
+  .arc-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 18px 14px 16px;
+    margin: 14px 0;
+    text-align: center;
+    box-shadow: 0 6px 22px rgba(124, 77, 255, 0.08);
+    animation: in 0.32s ease;
+  }
+
+  .arc-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--acc);
+    margin-bottom: 2px;
+  }
+
+  .arc-hint {
+    font-size: 14px;
+    color: var(--ink);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .arc-svg {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    overflow: visible;
+  }
+
+  .arc-node {
+    cursor: pointer;
+    transition: transform 0.22s ease;
+  }
+
+  .arc-node.locked {
+    cursor: not-allowed;
+    opacity: 0.52;
+  }
+
+  .arc-node.active:hover .node-core {
+    transform: scale(1.1);
+  }
+
+  .node-core {
+    transition: transform 0.22s ease, fill 0.3s ease;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .pulse-ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: pulse 1.8s ease-out infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.85; }
+    70% { transform: scale(1.65); opacity: 0; }
+    100% { transform: scale(1.65); opacity: 0; }
+  }
+
+  /* Interactive 0-3 GAD-7 Slider */
+  .slider-panel {
+    background: var(--card);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    padding: 16px;
+    margin-top: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    animation: in 0.25s ease;
+  }
+
+  .slider-readout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--slider-c, #7c4dff) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--slider-c, #7c4dff) 38%, transparent);
+    margin-bottom: 14px;
+    transition: all 0.22s ease;
+  }
+
+  .slider-code {
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--slider-c, #7c4dff);
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .slider-label {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  input[type="range"].gad-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--line);
+    border: none;
+    padding: 0;
+    margin: 6px 0 12px;
+    cursor: pointer;
+  }
+
+  input[type="range"].gad-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--slider-c, #7c4dff);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    cursor: grab;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+
+  input[type="range"].gad-slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+    transform: scale(1.14);
+  }
+
+  input[type="range"].gad-slider::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--slider-c, #7c4dff);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+    cursor: grab;
+  }
+
+  .slider-ticks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .tick-btn {
+    padding: 7px 4px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: transparent;
+    text-align: center;
+    font-size: 11.5px;
+    line-height: 1.25;
+    color: var(--mute);
+    cursor: pointer;
+    transition: all 0.18s ease;
+  }
+
+  .tick-btn strong {
+    display: block;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 2px;
+  }
+
+  .tick-btn.selected {
+    border-color: var(--slider-c, #7c4dff);
+    background: color-mix(in srgb, var(--slider-c, #7c4dff) 14%, transparent);
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  @keyframes in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Karan’s Journey</h1>
+  <div class="sub" id="sub">Interactive GAD-7 Reflection</div>
+  <div class="bar"><i id="prog"></i></div>
+  <div id="chat"></div>
+  <div id="arc-wrap"></div>
+  <div id="act"></div>
+</div>
+
+<script>
+// Custom SVG Avatar for "Pip" (Survey Guide)
+const PIP_SVG = `
+<svg viewBox="0 0 64 64" aria-hidden="true">
+  <defs>
+    <linearGradient id="pipGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9b72ff"/>
+      <stop offset="100%" stop-color="#6b3df5"/>
+    </linearGradient>
+  </defs>
+  <g class="pip-bob">
+    <ellipse cx="32" cy="58" rx="14" ry="3.2" fill="rgba(124,77,255,0.2)"/>
+    <!-- Friendly dome body with three wavy feet -->
+    <path d="M13 31 C13 15, 51 15, 51 31 L51 47 C51 51, 46 51, 45 46 C44 42, 41 42, 40 46 C39 51, 34 51, 32 46 C30 42, 27 42, 26 46 C25 51, 20 51, 19 46 C18 42, 15 42, 14 46 C13 49, 13 47, 13 31 Z"
+          fill="url(#pipGrad)" stroke="#2b1e4a" stroke-width="2.4" stroke-linejoin="round"/>
+    <!-- Highlight sheen -->
+    <path d="M19 24 C22 18, 30 16, 36 17" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.55"/>
+    <!-- Eyes & cheerful expression -->
+    <circle cx="25.5" cy="30" r="2.7" fill="#1e1533"/>
+    <circle cx="38.5" cy="30" r="2.7" fill="#1e1533"/>
+    <circle cx="26.4" cy="29.1" r="0.9" fill="#ffffff"/>
+    <circle cx="39.4" cy="29.1" r="0.9" fill="#ffffff"/>
+    <ellipse cx="21.5" cy="33.5" rx="2.5" ry="1.4" fill="#ff8fa3" opacity="0.75"/>
+    <ellipse cx="42.5" cy="33.5" rx="2.5" ry="1.4" fill="#ff8fa3" opacity="0.75"/>
+    <path d="M29.5 34.2 Q32 36.8 34.5 34.2" stroke="#1e1533" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </g>
+</svg>`;
+
+// 7 GAD-7 Items preserving Karan's exact story wording + scene-specific quick check options
+const D = [
+  {
+    n: 1,
+    t: "Feeling nervous, anxious, or on edge",
+    s: [
+      "Karan sits in his car in a bank’s parking lot before a meeting about a credit limit for the business.",
+      "His heart beats fast and his jaw is tight. He checks the folder of papers on the passenger seat and looks at the clock on the dashboard.",
+      "Heart is going, jaw is tight. Numbers are solid, papers are sorted, so there is no reason for it. Annoyed. Bas, no point sitting here. Go in.",
+      "He squares the folder, takes a breath, and walks to the bank entrance with the folder under his arm."
+    ],
+    correct: "Feeling nervous, keyed up, and on edge right before his bank credit limit meeting.",
+    distractors: [
+      "Becoming easily annoyed at the bank staff for keeping him waiting in the parking lot.",
+      "Feeling so physically restless that he drives away without going into the bank."
+    ]
+  },
+  {
+    n: 2,
+    t: "Not being able to stop or control worrying",
+    s: [
+      "Karan lies in bed in his bedroom at night while his wife sleeps beside him.",
+      "He remembers that a client’s payment for a large order has not arrived. He tells himself it will come in the morning, but the thought stays and he picks up his phone to check the bank app.",
+      "Payment will come. Nothing to do till morning. No point thinking about it. But it is running in my head and I can’t shut it off. Tired. Need it sorted.",
+      "He opens the bank app, sees no payment, puts the phone on the table, and picks it up as soon as the screen goes dark."
+    ],
+    correct: "Not being able to stop or control a repeating worry about a client’s payment.",
+    distractors: [
+      "Worrying about many unrelated parts of his life all at the exact same time.",
+      "Feeling afraid that an awful medical emergency is happening at his parents’ house."
+    ]
+  },
+  {
+    n: 3,
+    t: "Worrying too much about different things",
+    s: [
+      "Karan sits in the back seat of his car in traffic on the way to the warehouse in the morning.",
+      "He thinks about a late shipment, then about a supplier’s price change, then about his uncle’s objection to the new invoicing system. Each thought pushes out the one before it.",
+      "Shipment is late. Supplier raised rates. Uncle is objecting to the invoicing. Three fires, one head. No bandwidth. Priority list, bas. First the shipment, then the rates, then the uncle.",
+      "He opens a note on his phone, types three lines, and moves the order of the lines."
+    ],
+    correct: "Worrying too much about many different things at once—a late shipment, supplier rates, and his uncle’s objection.",
+    distractors: [
+      "Stuck replaying a single bank app check over and over in bed.",
+      "Finding it hard to unwind on his apartment balcony with tea when nothing is scheduled."
+    ]
+  },
+  {
+    n: 4,
+    t: "Trouble relaxing",
+    s: [
+      "Karan sits on the balcony of his apartment in the evening with a cup of tea.",
+      "He has no meetings and no calls scheduled, and his wife sits beside him. His shoulders stay tight and his mind stays on tomorrow’s orders.",
+      "Nothing scheduled. Tea is fine. Wife is right here. And I am sitting here doing numbers in my head. No point. Wasted evening. Chalo, check the orders. At least that is something.",
+      "He checks the order list on his phone, puts it down, and asks his wife what she said."
+    ],
+    correct: "Having trouble relaxing and unwinding even during a free evening on the balcony.",
+    distractors: [
+      "Feeling an intense physical urge to pace around a waiting area because he cannot sit still.",
+      "Snapping irritably at his wife while sitting together with tea."
+    ]
+  },
+  {
+    n: 5,
+    t: "Being so restless that it is hard to sit still",
+    s: [
+      "Karan sits in the waiting area of a transport office while a shipment is cleared.",
+      "The clerk says the paperwork is in progress and asks him to wait on the chair near the counter. Karan stands up, walks to the counter, and returns to the chair.",
+      "Nothing I can do till they finish. Sitting is a waste. Legs won’t stay. Theek hai, I walk. Counter, door, back. Bas. Somebody should speed this up.",
+      "He taps his foot, walks to the door and looks at the street, and checks the counter display on the way back to the chair."
+    ],
+    correct: "Being so physically restless in the transport office waiting area that it is hard to sit still.",
+    distractors: [
+      "Struggling to relax on his balcony at home even though no meetings are scheduled.",
+      "Feeling nervous and tight-jawed right before walking into a bank meeting."
+    ]
+  },
+  {
+    n: 6,
+    t: "Becoming easily annoyed or irritable",
+    s: [
+      "Karan stands at the gate of his warehouse in the morning while a truck is unloaded.",
+      "The driver blocks the gate while talking on his phone, and a message from his uncle asks for a small change to an invoice. He presses his lips together and exhales.",
+      "Truck is blocking the gate, uncle wants a tiny invoice change now. Small things. Still, I am annoyed. Everyone is slow today. Not their fault, but I am short with everyone. Bas.",
+      "He tells the driver to move the truck, types a short reply to his uncle, and puts the phone in his pocket."
+    ],
+    correct: "Becoming easily annoyed and irritable over a blocked gate and a small invoice change.",
+    distractors: [
+      "Feeling afraid that something terrible has happened to his parents across the city.",
+      "Juggling worries about shipments, supplier rates, and invoicing systems all at once."
+    ]
+  },
+  {
+    n: 7,
+    t: "Feeling afraid as if something awful might happen",
+    s: [
+      "Karan stands in the hallway of his apartment in the evening, holding his phone.",
+      "His father does not answer the call, and his mother’s phone is switched off. He pictures a medical emergency at their house in the other part of the city.",
+      "Bottom line, no reason for it. Phones die, they are probably out. But my chest is tight and I am picturing the worst. Not helping. Taking the car, going over. Bas.",
+      "He grabs the car keys, messages his wife that he is going to his parents’ house, and leaves."
+    ],
+    correct: "Feeling afraid as if something awful might happen when his parents do not answer.",
+    distractors: [
+      "Feeling irritated that his parents forgot to charge their phones in the evening.",
+      "Feeling jittery right before walking into a bank credit limit meeting."
+    ]
+  }
+];
+
+// Cartoon Setting Illustrations for Karan's 7 scenes (Karan shown with neutral cartoon eyes and no emotional expression)
+const CARTOON_WRAP = (body) => `
+<svg viewBox="0 0 460 220" role="img" aria-label="Cartoon illustration of the setting">
+  <defs>
+    <linearGradient id="nightWindow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#19213c"/>
+      <stop offset="100%" stop-color="#2c3a66"/>
+    </linearGradient>
+    <linearGradient id="daySky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#90e0ef"/>
+      <stop offset="100%" stop-color="#caf0f8"/>
+    </linearGradient>
+    <linearGradient id="eveningSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f78c6b"/>
+      <stop offset="100%" stop-color="#ffd166"/>
+    </linearGradient>
+  </defs>
+  ${body}
+</svg>`;
+
+// Cartoon standing figure of Karan with neat short beard/hair and neutral dot eyes (no emotional expression)
+const KARAN_CHAR = (x, y, scale = 1, shirt = "#e07a5f") => `
+<g transform="translate(${x},${y}) scale(${scale})">
+  <!-- Ground shadow -->
+  <ellipse cx="0" cy="4" rx="18" ry="4.5" fill="#2b2238" opacity="0.22"/>
+  <!-- Trousers & leather shoes -->
+  <rect x="-11" y="-44" width="9" height="44" rx="4" fill="#2b2d42" stroke="#2b2238" stroke-width="2.2"/>
+  <rect x="2" y="-44" width="9" height="44" rx="4" fill="#2b2d42" stroke="#2b2238" stroke-width="2.2"/>
+  <ellipse cx="-6.5" cy="1" rx="8.5" ry="3.8" fill="#4a3525" stroke="#2b2238" stroke-width="2"/>
+  <ellipse cx="6.5" cy="1" rx="8.5" ry="3.8" fill="#4a3525" stroke="#2b2238" stroke-width="2"/>
+  <!-- Smart-casual collared shirt -->
+  <path d="M-16 -84 Q0 -88 16 -84 L18 -40 Q0 -37 -18 -40 Z" fill="${shirt}" stroke="#2b2238" stroke-width="2.3" stroke-linejoin="round"/>
+  <path d="M0 -85 V-40" stroke="#2b2238" stroke-width="1.6" opacity="0.45"/>
+  <path d="M-14 -82 L-6 -41 L-16 -41 Z" fill="#ffffff" opacity="0.18"/>
+  <!-- Neck & Cartoon Face with neutral eyes only -->
+  <rect x="-4.5" y="-92" width="9" height="9" rx="3" fill="#dfa67b" stroke="#2b2238" stroke-width="2"/>
+  <circle cx="0" cy="-103" r="12.5" fill="#dfa67b" stroke="#2b2238" stroke-width="2.2"/>
+  <!-- Neat dark hair & subtle jawline trim -->
+  <path d="M-12.5 -104 C-13 -116, 13 -116, 12.5 -104 C7 -109, -4 -109, -12.5 -104 Z" fill="#2b2238"/>
+  <path d="M-12.5 -104 V-98 M12.5 -104 V-98" stroke="#2b2238" stroke-width="2.8" stroke-linecap="round"/>
+  <!-- Neutral cartoon eyes -->
+  <circle cx="-4.2" cy="-102" r="2.1" fill="#2b2238"/>
+  <circle cx="4.2" cy="-102" r="2.1" fill="#2b2238"/>
+  <circle cx="-3.6" cy="-102.7" r="0.7" fill="#ffffff"/>
+  <circle cx="4.8" cy="-102.7" r="0.7" fill="#ffffff"/>
+</g>`;
+
+const IL = {
+  // 1. Bank parking lot before credit limit meeting with car, folder of papers, and bank entrance
+  1: CARTOON_WRAP(`
+    <rect width="460" height="220" fill="url(#daySky)"/>
+    <!-- Bank Building Entrance on right -->
+    <rect x="276" y="34" width="164" height="128" rx="6" fill="#f7ede2" stroke="#2b2238" stroke-width="2.5"/>
+    <rect x="320" y="16" width="76" height="18" rx="4" fill="#1d3557"/>
+    <path d="M334 25 H382" stroke="#ffd166" stroke-width="2.8" stroke-linecap="round"/>
+    <!-- Glass Entrance Doors -->
+    <rect x="318" y="88" width="80" height="74" rx="4" fill="#caf0f8" stroke="#2b2238" stroke-width="2.2"/>
+    <path d="M358 88 V162" stroke="#2b2238" stroke-width="2"/>
+    <!-- Parking Lot Asphalt -->
+    <rect x="0" y="162" width="460" height="58" fill="#6c757d" stroke="#2b2238" stroke-width="2.4"/>
+    <path d="M18 196 H196" stroke="#ffffff" stroke-width="3" stroke-dasharray="16 12"/>
+    <!-- Parked Sedan on left -->
+    <g transform="translate(22, 92)">
+      <path d="M24 38 L44 10 H128 L150 38 Z" fill="#3a86ff" stroke="#2b2238" stroke-width="2.4"/>
+      <rect x="48" y="16" width="36" height="20" rx="3" fill="#caf0f8" stroke="#2b2238" stroke-width="2"/>
+      <rect x="90" y="16" width="34" height="20" rx="3" fill="#caf0f8" stroke="#2b2238" stroke-width="2"/>
+      <rect x="8" y="36" width="164" height="32" rx="10" fill="#2b2d42" stroke="#2b2238" stroke-width="2.4"/>
+      <circle cx="42" cy="70" r="14" fill="#14111c"/>
+      <circle cx="42" cy="70" r="5.5" fill="#adb5bd"/>
+      <circle cx="138" cy="70" r="14" fill="#14111c"/>
+      <circle cx="138" cy="70" r="5.5" fill="#adb5bd"/>
+    </g>
+    <!-- Karan walking toward bank entrance with neutral cartoon eyes & folder of papers -->
+    ${KARAN_CHAR(236, 198, 1.04, "#e07a5f")}
+    <rect x="252" y="124" width="18" height="24" rx="3" fill="#ffbe0b" stroke="#2b2238" stroke-width="2"/>
+  `),
+
+  // 2. Bedroom at night with wife sleeping & Karan checking bank app on phone
+  2: CARTOON_WRAP(`
+    <rect width="460" height="220" fill="#242746"/>
+    <!-- Moonlit window -->
+    <rect x="32" y="24" width="84" height="92" rx="8" fill="url(#nightWindow)" stroke="#141629" stroke-width="2.6"/>
+    <circle cx="64" cy="54" r="14" fill="#ffe66d"/>
+    <circle cx="71" cy="49" r="12" fill="#1e2749"/>
+    <circle cx="96" cy="42" r="2.2" fill="#ffffff"/>
+    <path d="M74 24 V116 M32 70 H116" stroke="#141629" stroke-width="2.4"/>
+    <!-- Nightstand & bedside lamp -->
+    <rect x="364" y="136" width="66" height="58" rx="6" fill="#5e548e" stroke="#141629" stroke-width="2.4"/>
+    <path d="M385 118 L391 96 H405 L411 118 Z" fill="#ffb703" stroke="#141629" stroke-width="2.2"/>
+    <rect x="395" y="118" width="6" height="18" fill="#adb5bd" stroke="#141629" stroke-width="2"/>
+    <!-- Floor -->
+    <rect x="0" y="190" width="460" height="30" fill="#181a30" stroke="#141629" stroke-width="2"/>
+    <!-- Double Bed -->
+    <rect x="116" y="106" width="234" height="86" rx="12" fill="#4a4063" stroke="#141629" stroke-width="2.6"/>
+    <rect x="124" y="128" width="218" height="54" rx="10" fill="#e0d7ff" stroke="#141629" stroke-width="2.2"/>
+    <!-- Wife sleeping beside him -->
+    <rect x="274" y="112" width="64" height="24" rx="11" fill="#ffffff" stroke="#141629" stroke-width="2"/>
+    <circle cx="304" cy="121" r="11" fill="#e6b08a" stroke="#141629" stroke-width="2"/>
+    <path d="M293 120 A11 11 0 0 1 315 120 Z" fill="#2b2238"/>
+    <path d="M298 122 Q301 124 304 122 M306 122 Q309 124 312 122" stroke="#2b2238" stroke-width="1.6" fill="none"/>
+    <!-- Pillow & Karan in bed with neutral cartoon eyes -->
+    <rect x="132" y="112" width="72" height="26" rx="12" fill="#ffffff" stroke="#141629" stroke-width="2.2"/>
+    <circle cx="164" cy="119" r="12.5" fill="#dfa67b" stroke="#141629" stroke-width="2.2"/>
+    <path d="M151.5 117 C152 106, 176 106, 176.5 117 C171 113, 157 113, 151.5 117 Z" fill="#2b2238"/>
+    <circle cx="163" cy="119" r="2" fill="#2b2238"/>
+    <circle cx="171" cy="119" r="2" fill="#2b2238"/>
+    <path d="M176 128 Q248 116 338 130 V180 H176 Z" fill="#e07a5f" stroke="#141629" stroke-width="2.4"/>
+    <!-- Glowing Smartphone showing bank app -->
+    <polygon points="204,114 176,84 228,84" fill="#90e0ef" opacity="0.22"/>
+    <rect x="196" y="96" width="14" height="22" rx="3.5" fill="#caf0f8" stroke="#141629" stroke-width="2.2"/>
+  `),
+
+  // 3. Back seat of car in morning traffic on the way to warehouse
+  3: CARTOON_WRAP(`
+    <rect width="460" height="220" fill="url(#daySky)"/>
+    <!-- City traffic & warehouse buildings outside car window -->
+    <rect x="26" y="48" width="68" height="96" fill="#adb5bd" stroke="#2b2238" stroke-width="2"/>
+    <rect x="114" y="64" width="76" height="80" fill="#ced4da" stroke="#2b2238" stroke-width="2"/>
+    <rect x="304" y="54" width="84" height="90" fill="#adb5bd" stroke="#2b2238" stroke-width="2"/>
+    <!-- Car Interior Frame -->
+    <rect x="0" y="0" width="460" height="22" fill="#2b2d42" stroke="#14111c" stroke-width="2.4"/>
+    <rect x="0" y="0" width="26" height="220" fill="#2b2d42" stroke="#14111c" stroke-width="2.4"/>
+    <rect x="434" y="0" width="26" height="220" fill="#2b2d42" stroke="#14111c" stroke-width="2.4"/>
+    <rect x="236" y="22" width="16" height="120" fill="#2b2d42"/>
+    <!-- Car Back Seat -->
+    <rect x="26" y="122" width="408" height="98" rx="14" fill="#4a4e69" stroke="#2b2238" stroke-width="2.5"/>
+    <rect x="26" y="166" width="408" height="54" fill="#22223b" stroke="#2b2238" stroke-width="2.4"/>
+    <!-- Karan seated in back seat with neutral cartoon eyes & phone note -->
+    <rect x="116" y="114" width="42" height="54" rx="13" fill="#e07a5f" stroke="#2b2238" stroke-width="2.4"/>
+    <rect x="132" y="96" width="9" height="10" rx="3" fill="#dfa67b" stroke="#2b2238" stroke-width="2"/>
+    <circle cx="137" cy="84" r="13" fill="#dfa67b" stroke="#2b2238" stroke-width="2.3"/>
+    <path d="M124 83 C123.5 70, 150.5 70, 150 83 C145 79, 129 79, 124 83 Z" fill="#2b2238"/>
+    <circle cx="133" cy="85" r="2.1" fill="#2b2238"/>
+    <circle cx="141" cy="85" r="2.1" fill="#2b2238"/>
+    <!-- Phone with 3-line priority list -->
+    <rect x="164" y="126" width="14" height="22" rx="3.5" fill="#fff3b0" stroke="#2b2238" stroke-width="2"/>
+    <!-- Front Seat Headrest -->
+    <rect x="312" y="96" width="54" height="36" rx="10" fill="#22223b" stroke="#2b2238" stroke-width="2.2"/>
+  `),
+
+  // 4. Evening apartment balcony with cup of tea, wife beside him, and phone
+  4: CARTOON_WRAP(`
+    <rect width="460" height="220" fill="url(#eveningSky)"/>
+    <!-- Setting sun & evening skyline -->
+    <circle cx="378" cy="86" r="28" fill="#fff3b0" opacity="0.85"/>
+    <path d="M0 148 V106 H42 V82 H82 V148 H124 V96 H168 V148 H216 V88 H260 V148 H310 V102 H354 V148 H460 V148 Z"
+          fill="#3d2c5e" stroke="#2b2238" stroke-width="2.2" stroke-linejoin="round"/>
+    <!-- Balcony Floor -->
+    <rect x="0" y="178" width="460" height="42" fill="#b08968" stroke="#2b2238" stroke-width="2.4"/>
+    <!-- Balcony Chairs & Small Table with Tea Cups -->
+    <!-- Karan seated on left with neutral cartoon eyes & phone -->
+    <rect x="96" y="124" width="36" height="36" rx="11" fill="#e07a5f" stroke="#2b2238" stroke-width="2.3"/>
+    <circle cx="114" cy="109" r="12" fill="#dfa67b" stroke="#2b2238" stroke-width="2.2"/>
+    <path d="M102 108 C101.5 96, 126.5 96, 126 108 Z" fill="#2b2238"/>
+    <circle cx="110" cy="110" r="2" fill="#2b2238"/>
+    <circle cx="118" cy="110" r="2" fill="#2b2238"/>
+    <!-- Wife seated on right -->
+    <path d="M261 110 C257 124, 259 138, 263 146 H285 C289 138, 291 124, 287 110 Z" fill="#2b2238"/>
+    <rect x="258" y="124" width="34" height="36" rx="11" fill="#2ec4b6" stroke="#2b2238" stroke-width="2.3"/>
+    <circle cx="274" cy="110" r="12" fill="#e6b08a" stroke="#2b2238" stroke-width="2.2"/>
+    <path d="M262 109 A12 12 0 0 1 286 109 Q274 104 262 109 Z" fill="#2b2238"/>
+    <circle cx="270" cy="111" r="2" fill="#2b2238"/>
+    <circle cx="278" cy="111" r="2" fill="#2b2238"/>
+    <!-- Small Balcony Table with Tea & Phone -->
+    <rect x="164" y="152" width="76" height="10" rx="4" fill="#8d5b4c" stroke="#2b2238" stroke-width="2.2"/>
+    <rect x="198" y="162" width="8" height="22" fill="#495057"/>
+    <rect x="176" y="138" width="13" height="14" rx="3" fill="#ffffff" stroke="#2b2238" stroke-width="1.8"/>
+    <rect x="214" y="138" width="13" height="14" rx="3" fill="#ffffff" stroke="#2b2238" stroke-width="1.8"/>
+    <rect x="194" y="146" width="14" height="6" rx="2" fill="#2b2238"/>
+    <!-- Balcony Railing -->
+    <rect x="0" y="144" width="460" height="6" fill="#2b2238"/>
+  `),
+
+  // 5. Transport office waiting area with counter display, clerk, and waiting chair
+  5: CARTOON_WRAP(`
+    <rect width="460" height="220" fill="#f2f4f8"/>
+    <rect x="0" y="168" width="460" height="52" fill="#d8dee9" stroke="#2b2238" stroke-width="2.2"/>
+    <!-- Transport Office Service Counter & Digital Token Display -->
+    <rect x="224" y="128" width="212" height="44" rx="6" fill="#bc6c25" stroke="#2b2238" stroke-width="2.4"/>
+    <rect x="242" y="42" width="176" height="66" rx="6" fill="#caf0f8" stroke="#2b2238" stroke-width="2.4"/>
+    <!-- Digital Counter Display -->
+    <rect x="292" y="16" width="76" height="20" rx="4" fill="#1d3557"/>
+    <path d="M306 26 H354" stroke="#80ed99" stroke-width="3" stroke-linecap="round"/>
+    <!-- Clerk behind counter -->
+    <rect x="314" y="94" width="32" height="34" rx="10" fill="#3a86ff" stroke="#2b2238" stroke-width="2.2"/>
+    <circle cx="330" cy="80" r="11" fill="#dfa67b" stroke="#2b2238" stroke-width="2.1"/>
+    <path d="M319 79 A11 11 0 0 1 341 79 Z" fill="#2b2238"/>
+    <circle cx="326" cy="81" r="1.8" fill="#2b2238"/>
+    <circle cx="334" cy="81" r="1.8" fill="#2b2238"/>
+    <!-- Empty Waiting Chair on left -->
+    <rect x="44" y="116" width="44" height="34" rx="8" fill="#495057" stroke="#2b2238" stroke-width="2.2"/>
+    <rect x="52" y="150" width="8" height="24" fill="#2b2238"/>
+    <rect x="72" y="150" width="8" height="24" fill="#2b2238"/>
+    <!-- Karan pacing between chair and counter with neutral cartoon eyes -->
+    ${KARAN_CHAR(158, 196, 1.04, "#e07a5f")}
+  `),
+
+  // 6. Warehouse gate in morning with cargo truck blocking entrance
+  6: CARTOON_WRAP(`
+    <rect width="460" height="220" fill="url(#daySky)"/>
+    <!-- Warehouse Building & Open Metal Gate -->
+    <rect x="24" y="34" width="232" height="134" rx="6" fill="#e9ecef" stroke="#2b2238" stroke-width="2.4"/>
+    <rect x="54" y="64" width="144" height="104" fill="#adb5bd" stroke="#2b2238" stroke-width="2.4"/>
+    <path d="M54 90 H198 M54 116 H198 M54 142 H198" stroke="#6c757d" stroke-width="2.5"/>
+    <!-- Paved Warehouse Yard -->
+    <rect x="0" y="168" width="460" height="52" fill="#6c757d" stroke="#2b2238" stroke-width="2.4"/>
+    <!-- Delivery Truck blocking the gate on right -->
+    <g transform="translate(216, 68)">
+      <!-- Cargo Box -->
+      <rect x="0" y="12" width="136" height="84" rx="6" fill="#ff9f1c" stroke="#2b2238" stroke-width="2.5"/>
+      <path d="M22 34 H114 M22 52 H96" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- Truck Cab -->
+      <path d="M136 36 H178 L192 62 V96 H136 Z" fill="#3a86ff" stroke="#2b2238" stroke-width="2.5"/>
+      <rect x="144" y="44" width="32" height="22" rx="3" fill="#caf0f8" stroke="#2b2238" stroke-width="2"/>
+      <!-- Wheels -->
+      <circle cx="38" cy="100" r="16" fill="#14111c"/>
+      <circle cx="38" cy="100" r="6" fill="#adb5bd"/>
+      <circle cx="104" cy="100" r="16" fill="#14111c"/>
+      <circle cx="104" cy="100" r="6" fill="#adb5bd"/>
+      <circle cx="166" cy="100" r="16" fill="#14111c"/>
+      <circle cx="166" cy="100" r="6" fill="#adb5bd"/>
+    </g>
+    <!-- Karan standing at gate with neutral cartoon eyes & phone -->
+    ${KARAN_CHAR(114, 198, 1.04, "#e07a5f")}
+    <rect x="134" y="122" width="12" height="19" rx="3" fill="#caf0f8" stroke="#2b2238" stroke-width="2"/>
+  `),
+
+  // 7. Evening apartment hallway with Karan holding phone & car keys
+  7: CARTOON_WRAP(`
+    <rect width="460" height="220" fill="#2b2640"/>
+    <!-- Hallway Window overlooking evening street -->
+    <rect x="268" y="24" width="156" height="136" rx="8" fill="#3d346b" stroke="#14111c" stroke-width="2.6"/>
+    <circle cx="388" cy="54" r="13" fill="#fff3b0"/>
+    <path d="M346 24 V160 M268 92 H424" stroke="#14111c" stroke-width="2.6"/>
+    <!-- Apartment Main Door on left -->
+    <rect x="32" y="32" width="96" height="150" rx="6" fill="#6f4e37" stroke="#14111c" stroke-width="2.5"/>
+    <circle cx="114" cy="112" r="4.5" fill="#ffd166"/>
+    <!-- Floor -->
+    <rect x="0" y="182" width="460" height="38" fill="#8d5b4c" stroke="#14111c" stroke-width="2.4"/>
+    <!-- Karan standing in hallway with neutral cartoon eyes, phone & car keys -->
+    ${KARAN_CHAR(192, 198, 1.05, "#e07a5f")}
+    <rect x="212" y="106" width="12" height="20" rx="3" fill="#caf0f8" stroke="#14111c" stroke-width="2.2"/>
+    <circle cx="168" cy="134" r="5" fill="none" stroke="#ffd166" stroke-width="2.2"/>
+    <rect x="166" y="139" width="4" height="10" rx="1" fill="#ffd166"/>
+  `)
+};
+
+const L = ["Setting", "Moment", "In his words", "What he does"];
+const DC = ["#7c4dff", "#ff6b6b", "#ff9f1c", "#2ec4b6", "#3a86ff", "#e056a0", "#8ac926"];
+const SLIDER_OPTS = [
+  { v: 0, l: "Not at all", c: "#2ec4b6" },
+  { v: 1, l: "Several days", c: "#3a86ff" },
+  { v: 2, l: "More than half the days", c: "#ff9f1c" },
+  { v: 3, l: "Nearly every day", c: "#ff6b6b" }
+];
+
+const $ = id => document.getElementById(id);
+const sh = a => {
+  a = a.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.random() * (i + 1) | 0;
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+
+let order = [];
+let k = 0;
+let log = [];
+let T = 0;
+let PID = "";
+let t0 = "";
+
+function updateProgress(doneCount) {
+  $("prog").style.width = Math.round((doneCount / 7) * 100) + "%";
+}
+
+function say(h, isUser = false) {
+  const row = document.createElement("div");
+  row.className = "msg-row" + (isUser ? " u" : "");
+  if (isUser) {
+    row.innerHTML = `<div class="b u">${h}</div>`;
+  } else {
+    row.innerHTML = `
+      <div class="avatar" title="Pip — Survey Guide">${PIP_SVG}</div>
+      <div class="b">
+        <div class="bot-name">Pip · Survey Guide</div>
+        <div>${h}</div>
+      </div>`;
+  }
+  $("chat").appendChild(row);
+  row.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  return row;
+}
+
+function pick(opts, cb, rowMode = false) {
+  const a = $("act");
+  a.className = "opts" + (rowMode ? " row" : "");
+  a.innerHTML = "";
+  opts.forEach(o => {
+    const b = document.createElement("button");
+    b.className = o.cls || "";
+    b.textContent = o.l;
+    b.onclick = () => {
+      a.innerHTML = "";
+      say(o.l, true);
+      cb(o);
+    };
+    a.appendChild(b);
+  });
+}
+
+// Step 1: Onboarding & Numerical Participant ID
+function start() {
+  $("chat").innerHTML = "";
+  $("arc-wrap").innerHTML = "";
+  $("act").innerHTML = "";
+  log = [];
+  k = 0;
+  updateProgress(0);
+  $("sub").textContent = "Welcome · Participant Check-In";
+
+  say("Hi! I am <b>Pip</b>, your survey guide. Today we will be going through <b>Karan’s</b> journey on his experience with anxiety, followed by a self-reflection question on the same. To start, write your participant ID.");
+
+  const a = $("act");
+  a.className = "opts";
+  const inp = document.createElement("input");
+  inp.id = "pid";
+  inp.type = "text";
+  inp.inputMode = "numeric";
+  inp.pattern = "[0-9]*";
+  inp.placeholder = "Enter numerical Participant ID (e.g., 1042)";
+  inp.maxLength = 20;
+
+  const err = document.createElement("div");
+  err.className = "err";
+
+  const btn = document.createElement("button");
+  btn.className = "p";
+  btn.textContent = "Continue";
+  btn.disabled = true;
+
+  inp.oninput = () => {
+    const raw = inp.value.trim();
+    if (!raw) {
+      err.textContent = "";
+      btn.disabled = true;
+    } else if (!/^\d+$/.test(raw)) {
+      err.textContent = "Please enter numbers only for your Participant ID.";
+      btn.disabled = true;
+    } else {
+      err.textContent = "";
+      btn.disabled = false;
+    }
+  };
+
+  const submitId = () => {
+    const v = inp.value.trim();
+    if (!/^\d+$/.test(v)) {
+      err.textContent = "Please enter numbers only for your Participant ID.";
+      return;
+    }
+    PID = v;
+    a.innerHTML = "";
+    say(PID, true);
+    t0 = new Date().toISOString();
+    order = D.slice();
+    setTimeout(showOverview, 320);
+  };
+
+  inp.onkeydown = e => {
+    if (e.key === "Enter" && !btn.disabled) submitId();
+  };
+  btn.onclick = submitId;
+
+  a.append(inp, err, btn);
+}
+
+// Step 2: Character Introduction & Start / Quit Choice
+function showOverview() {
+  $("sub").textContent = "Participant #" + PID + " · Overview";
+  say(
+    "Thank you, we will follow <b>Karan’s</b> journey on his experience with anxiety. " +
+    "He is 29 and co-owns an auto-components trading business in Delhi NCR. He lives in an apartment with his wife, and his parents live in a separate house nearby.<br><br>" +
+    "There will be a total of 7 questions representing the seven symptoms on the Generalized Anxiety Disorder (GAD-7) Scale. First we will respond to Karan’s feelings, followed by a self-reflection of oneself on the GAD item. Select <b>“Start”</b> to begin and <b>“Quit”</b> to exit."
+  );
+
+  pick(
+    [
+      { l: "Start", cls: "p", action: "start" },
+      { l: "Quit", cls: "ghost", action: "quit" }
+    ],
+    choice => {
+      if (choice.action === "quit") {
+        $("sub").textContent = "Session Exited";
+        say("You have exited the session. Whenever you are ready to begin again, click <b>Restart</b> below.");
+        pick([{ l: "Restart", cls: "p" }], start);
+      } else {
+        setTimeout(() => showArcMap(true), 280);
+      }
+    },
+    true
+  );
+}
+
+// Step 3: Minimalist Semi-Circular 7-Dot Interactive Path
+function showArcMap(isFirst = false) {
+  if (k >= order.length) {
+    setTimeout(end, 350);
+    return;
+  }
+
+  $("act").innerHTML = "";
+  updateProgress(k);
+  $("sub").textContent = `Pathway · ${k} of 7 Completed`;
+
+  if (isFirst) {
+    say("This is the semi-circular items path. Choose item to start.");
+  } else {
+    say(`Great work! You have completed <b>${k} of 7</b> items. Tap <b>Item ${k + 1}</b> on the semi-circular path to continue.`);
+  }
+
+  const cx = 75;
+  const cy = 175;
+  const r = 135;
+  const startDeg = -72;
+  const endDeg = 72;
+
+  const pts = order.map((item, idx) => {
+    const deg = startDeg + (idx * (endDeg - startDeg)) / 6;
+    const rad = (deg * Math.PI) / 180;
+    return {
+      idx,
+      n: item.n,
+      x: cx + r * Math.cos(rad),
+      y: cy + r * Math.sin(rad),
+      color: DC[idx]
+    };
+  });
+
+  const p0 = pts[0];
+  const pLast = pts[pts.length - 1];
+  const arcPath = `M ${p0.x.toFixed(1)} ${p0.y.toFixed(1)} A ${r} ${r} 0 0 1 ${pLast.x.toFixed(1)} ${pLast.y.toFixed(1)}`;
+
+  const nodesSvg = pts.map(p => {
+    const isDone = p.idx < k;
+    const isActive = p.idx === k;
+    const cls = isActive ? "arc-node active" : isDone ? "arc-node done" : "arc-node locked";
+    const fill = isDone ? "#1f9d6a" : isActive ? p.color : "var(--card)";
+    const stroke = isDone ? "#1f9d6a" : isActive ? p.color : "#b8b0c8";
+    const textFill = isDone || isActive ? "#ffffff" : "var(--mute)";
+
+    return `
+      <g class="${cls}" data-idx="${p.idx}" role="button" tabindex="${isActive ? 0 : -1}" aria-label="Item ${p.n}">
+        ${isActive ? `<circle class="pulse-ring" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="21" fill="none" stroke="${p.color}" stroke-width="2.5"/>` : ""}
+        <circle class="node-core" cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${isActive ? 20 : 16}" fill="${fill}" stroke="${stroke}" stroke-width="2.5"/>
+        <text x="${p.x.toFixed(1)}" y="${(p.y + 4.5).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="700" fill="${textFill}">
+          ${isDone ? "✓" : p.n}
+        </text>
+        <text x="${(p.x + 28).toFixed(1)}" y="${(p.y + 4).toFixed(1)}" font-size="12.5" font-weight="${isActive ? "700" : "500"}" fill="${isActive ? "var(--ink)" : "var(--mute)"}">
+          Item ${p.n}${isActive ? " · Tap" : isDone ? " · Done" : ""}
+        </text>
+      </g>`;
+  }).join("");
+
+  const wrap = $("arc-wrap");
+  wrap.innerHTML = `
+    <div class="arc-card">
+      <div class="arc-title">Karan’s Journey · 7 GAD-7 Items</div>
+      <div class="arc-hint">This is the semi-circular items path. Choose item to start.</div>
+      <svg class="arc-svg" viewBox="0 0 330 350" aria-label="Semi-circular 7-item path">
+        <path d="${arcPath}" fill="none" stroke="var(--line)" stroke-width="3.5" stroke-dasharray="6 6" stroke-linecap="round"/>
+        ${nodesSvg}
+      </svg>
+    </div>`;
+
+  wrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  const activeNode = wrap.querySelector('.arc-node[data-idx="' + k + '"]');
+  if (activeNode) {
+    const launch = () => {
+      wrap.innerHTML = "";
+      say(`Selected Item ${order[k].n}`, true);
+      setTimeout(runItem, 240);
+    };
+    activeNode.onclick = launch;
+    activeNode.onkeydown = e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        launch();
+      }
+    };
+  }
+}
+
+// Step 4: 4-Part Story + Tailored Quick Check + 0-3 Self-Reflection Slider
+function runItem() {
+  const it = order[k];
+  T = Date.now();
+  document.documentElement.style.setProperty("--day", DC[k]);
+  $("sub").textContent = `Item ${k + 1} of 7`;
+
+  const storyHtml =
+    `<div class="lbl" style="color:${DC[k]};font-weight:700;margin-bottom:4px">Item ${it.n} of 7</div>` +
+    it.s.map((x, i) =>
+      `<div class="sc${i === 2 ? " w" : ""}"><span class="lbl">${L[i]}</span><br>${i === 2 ? "“" + x + "”" : x}</div>` +
+      (i === 0 ? `<div class="ill">${IL[it.n]}</div>` : "")
+    ).join("");
+
+  say(storyHtml);
+
+  const opts = sh([
+    { l: it.correct, ok: true, c: "correct" },
+    { l: it.distractors[0], ok: false, c: "d1" },
+    { l: it.distractors[1], ok: false, c: "d2" }
+  ]).concat({ l: "None of the above", ok: false, c: "none" });
+
+  setTimeout(() => {
+    say("Quick check: what do you think Karan is feeling in this story? Pick the option that fits best.");
+    pick(opts, o => {
+      const cm = Date.now() - T;
+      if (o.ok) {
+        say(`<span class="fb">Thanks! 😊 That matches what Karan is feeling in this story: <b>${it.correct}</b></span>`);
+      } else {
+        say(`<span class="fb">Interesting! However in this story Karan is feeling <b>${it.correct}</b></span>`);
+      }
+
+      setTimeout(() => {
+        T = Date.now();
+        say(
+          `Now thinking about yourself, over the last 2 weeks, how often have you been bothered by the following problem?` +
+          `<p style="margin:8px 0 0;font-size:17px"><b>${it.t}</b></p>`
+        );
+        renderSlider(val => {
+          log.push({
+            scenario_id: "KM-I" + it.n,
+            item_number: it.n,
+            check_correct: o.ok,
+            check_choice: o.c,
+            check_ms: cm,
+            response: val,
+            response_ms: Date.now() - T,
+            answered_at: new Date().toISOString()
+          });
+          k++;
+          setTimeout(() => showArcMap(false), 320);
+        });
+      }, 450);
+    });
+  }, 420);
+}
+
+function renderSlider(onSubmit) {
+  const a = $("act");
+  a.className = "opts";
+  a.innerHTML = "";
+
+  let currentVal = 0;
+
+  const panel = document.createElement("div");
+  panel.className = "slider-panel";
+  panel.style.setProperty("--slider-c", SLIDER_OPTS[0].c);
+
+  panel.innerHTML = `
+    <div class="slider-readout" id="s-readout">
+      <span class="slider-label" id="s-label">[0] Not at all</span>
+      <span class="slider-code" id="s-code">Score: 0</span>
+    </div>
+    <input type="range" class="gad-slider" id="gad-range" min="0" max="3" step="1" value="0" aria-label="GAD-7 frequency rating from 0 to 3">
+    <div class="slider-ticks" id="s-ticks">
+      ${SLIDER_OPTS.map(o => `
+        <button type="button" class="tick-btn${o.v === 0 ? " selected" : ""}" data-v="${o.v}">
+          <strong>${o.v}</strong>${o.l}
+        </button>`).join("")}
+    </div>
+    <button type="button" class="p" id="s-confirm" style="width:100%">Submit Response</button>
+  `;
+
+  a.appendChild(panel);
+
+  const range = panel.querySelector("#gad-range");
+  const labelEl = panel.querySelector("#s-label");
+  const codeEl = panel.querySelector("#s-code");
+  const tickBtns = panel.querySelectorAll(".tick-btn");
+  const confirmBtn = panel.querySelector("#s-confirm");
+
+  const sync = val => {
+    currentVal = Number(val);
+    const opt = SLIDER_OPTS[currentVal];
+    range.value = currentVal;
+    panel.style.setProperty("--slider-c", opt.c);
+    labelEl.textContent = `[${opt.v}] ${opt.l}`;
+    codeEl.textContent = `Score: ${opt.v}`;
+    tickBtns.forEach(b => b.classList.toggle("selected", Number(b.dataset.v) === currentVal));
+  };
+
+  range.oninput = e => sync(e.target.value);
+  tickBtns.forEach(b => {
+    b.onclick = () => sync(b.dataset.v);
+  });
+
+  confirmBtn.onclick = () => {
+    const chosen = SLIDER_OPTS[currentVal];
+    a.innerHTML = "";
+    say(`[${chosen.v}] ${chosen.l}`, true);
+    onSubmit(chosen.v);
+  };
+}
+
+// Step 5: Thank-You & Encouraging Closing Message (No Scores Shown)
+function end() {
+  $("arc-wrap").innerHTML = "";
+  updateProgress(7);
+  $("sub").textContent = "Complete · All 7 Items Finished";
+
+  const totalScore = log.reduce((sum, r) => sum + Number(r.response || 0), 0);
+  let band = "Minimal anxiety";
+  if (totalScore >= 15) band = "Severe anxiety";
+  else if (totalScore >= 10) band = "Moderate anxiety";
+  else if (totalScore >= 5) band = "Mild anxiety";
+
+  say(`
+    <p style="margin:0 0 10px;font-size:15.5px;line-height:1.55">
+      Thank you for being part of this assessment and walking through Karan’s journey today.
+    </p>
+    <p style="margin:0;font-size:15px;line-height:1.55">
+      Taking a quiet moment to reflect on your feelings is a meaningful step in caring for yourself. Be gentle with yourself, take things one step at a time, and remember that support and connection are always there whenever you need them.
+    </p>
+  `);
+
+  const rec = {
+    participant: PID || "anon",
+    started: t0,
+    finished: new Date().toISOString(),
+    total_gad7_score: totalScore,
+    severity_band: band,
+    item_order: order.map(d => d.n),
+    items: log
+  };
+
+  saveDb(rec);
+
+  const a = $("act");
+  a.className = "opts";
+  a.innerHTML = "";
+  [
+    ["Download CSV", () => dl(rec, "csv")],
+    ["Download JSON", () => dl(rec, "json")],
+    ["Restart", start]
+  ].forEach(([l, f], i) => {
+    const b = document.createElement("button");
+    b.textContent = l;
+    b.className = i === 2 ? "p" : "";
+    b.onclick = f;
+    a.appendChild(b);
+  });
+}
+
+async function saveDb(rec) {
+  try {
+    const db = window.claude && await claude.use("db");
+    if (!db) return;
+    const id = (rec.participant.replace(/[^A-Za-z0-9_-]/g, "") || "anon") + "-" + Date.now();
+    await db.collection("sessions").doc(id).set(rec);
+  } catch (e) {}
+}
+
+async function dl(rec, f) {
+  const csv = [
+    "participant,started,total_gad7_score,severity_band,item_order,item_number,scenario_id,check_correct,check_choice,check_ms,response,response_ms,answered_at"
+  ].concat(
+    rec.items.map(r =>
+      [
+        rec.participant,
+        rec.started,
+        rec.total_gad7_score,
+        rec.severity_band,
+        rec.item_order.join("-"),
+        r.item_number,
+        r.scenario_id,
+        r.check_correct,
+        r.check_choice,
+        r.check_ms,
+        r.response,
+        r.response_ms,
+        r.answered_at
+      ]
+        .map(v => '"' + String(v).replace(/"/g, '""') + '"')
+        .join(",")
+    )
+  ).join("\n");
+
+  const data = f === "csv" ? csv : JSON.stringify(rec, null, 2);
+  const filename = "karan_journey_" + (rec.participant.replace(/[^A-Za-z0-9_-]/g, "") || "anon") + "." + f;
+
+  try {
+    const d = window.claude && await claude.use("downloads");
+    if (!d) throw 0;
+    await d.save({ filename, data });
+  } catch (e) {
+    if (e && e.code === "declined") return;
+    try {
+      const u = URL.createObjectURL(new Blob([data], { type: f === "csv" ? "text/csv" : "application/json" }));
+      const a = document.createElement("a");
+      a.href = u;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(u), 1500);
+    } catch (_) {}
+  }
+}
+
+start();
+</script>
+</body>
+</html>
